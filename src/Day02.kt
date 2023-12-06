@@ -31,7 +31,10 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
-        return input.size
+        return getGames(input)
+            .map { game ->
+                Set(game.sets.maxOf { it.red }, game.sets.maxOf { it.green }, game.sets.maxOf { it.blue })
+            }.sumOf { it.red * it.green * it.blue }
     }
 
     val input = readInput("Day02")
