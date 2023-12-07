@@ -39,14 +39,33 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
-        return input.size
+        val symbols = getSymbols(input)
+        val numberRegex = Regex("[0-9]+")
+
+        val gears = buildMap<Position, MutableList<Int>> {
+            input.forEachIndexed { row, line ->
+                numberRegex.findAll(line).forEach { match ->
+                    getPositionsAroundNumber(row, match.range, input).forEach { position ->
+                        if (symbols[position] == '*') {
+                            computeIfAbsent(position) { mutableListOf() }.add(match.value.toInt())
+                        }
+                    }
+                }
+            }
+        }
+
+        return gears.values
+            .filter { it.size >= 2 }
+            .sumOf { it.reduce { acc, i -> acc * i } }
     }
 
     val input = readInput("Day03")
 
     val part1Result = part1(input)
-    part1Result.println()
     check(part1Result == 527364)
+    part1Result.println()
 
-    part2(input).println()
+    val part2Result = part2(input)
+    check(part2Result == 79026871)
+    part2Result.println()
 }
